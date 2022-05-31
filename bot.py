@@ -93,14 +93,14 @@ async def trans_command(ctx, words:str):
 @bot.command(name='map', help='Get a map of our japan trip')
 async def map_command(ctx):
 	embed=discord.Embed(colour = discord.Colour.orange(), timestamp=ctx.message.created_at)
-	embed.set_image(url=(f"https://image.thum.io/get/width/1920/crop/675/maxAge/1/noanimate/https://www.google.com/maps/d/edit?mid=1o_mgr_3GXP_xbLO9mb4QeON7vLoxOSU&ll=35.14352219085946%2C138.07096682069218&z=8"))
+	embed.set_image(url=(f"https://image.thum.io/get/width/1920/crop/1200/viewportWidth/2400/maxAge/1/noanimate/https://www.google.com/maps/d/edit?mid=1o_mgr_3GXP_xbLO9mb4QeON7vLoxOSU&ll=34.545604858227236%2C136.10263576493375&z=8"))
 	await ctx.send(embed=embed)
 
 async def schedule_daily_message():
 	while True:
 		now = datetime.datetime.now()
 		then = now+datetime.timedelta(days=1)
-		then = now.replace(hour=8, minute=0, second=0)
+		then = now.replace(hour=14, minute=50, second=0)
 		if then < now:
 			then += datetime.timedelta(days=1)
 		wait_time = (then-now).total_seconds()
