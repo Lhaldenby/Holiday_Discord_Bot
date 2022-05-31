@@ -1,7 +1,7 @@
 import os, discord, datetime, asyncio, string
 
 from dotenv import load_dotenv
-from discord.ext import commands
+from discord.ext import tasks, commands
 from dataclasses import dataclass
 from translate import Translator
 from time import sleep
@@ -102,10 +102,10 @@ async def map_command(ctx):
 	embed.set_image(url=(f"https://image.thum.io/get/width/1920/crop/1200/viewportWidth/2400/maxAge/1/noanimate/https://www.google.com/maps/d/edit?mid=1o_mgr_3GXP_xbLO9mb4QeON7vLoxOSU&ll=34.545604858227236%2C136.10263576493375&z=8"))
 	await ctx.send(embed=embed)
 
+#todo: fix
 async def schedule_daily_message():
 	while True:
 		now = datetime.datetime.now()
-		then = now+datetime.timedelta(days=1)
 		then = now.replace(hour=8, minute=0, second=0)
 		if then < now:
 			then += datetime.timedelta(days=1)
@@ -118,6 +118,17 @@ async def schedule_daily_message():
 		diff = future - today
 		await channel.send(f'Japan Countdown {diff.days} days remaining')
 		await asyncio.sleep(1)
+
+@tasks.loop(minutes=1.0)
+async def send_daily_message():
+	now = datetime.now()
+	mystart = now.replace(hour=17, minute=35, second=0)
+	if now.hour == datetime.strptime(mystart).hour and now.minute == datetime.strptip(mystart).minute:
+		channel = bot.get_channel(CHANNEL)
+		today = datetime.date.today()
+		future = datetime.date(2023,10,14)
+		diff = future - today
+		await channel.send(f'Japan Countdown {diff.days} days remaining')
 
 @bot.event
 async def on_command_error(ctx, error):
