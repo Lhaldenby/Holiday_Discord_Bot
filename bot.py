@@ -82,13 +82,13 @@ async def going_command(ctx, name:str):
 				going = "is going"
 			await ctx.send(f'{person.name} {going}. They {timeoff}, {flight} and {lodging}.')
 
-@bot.command(name='translate', help='Translate your text to japanese')
-async def trans_command(ctx, words:str):
-	translator = Translator(to_lang="ja")
-	print(f'{words}')
-	response = translator.translate(words) #words, src='en', dest='ja'
-	print(response)
-	await ctx.send(response.text)
+#@bot.command(name='translate', help='Translate your text to japanese')
+#async def trans_command(ctx, words:str):
+#	translator = Translator(to_lang="ja")
+#	print(f'{words}')
+#	response = translator.translate(words) #words, src='en', dest='ja'
+#	print(response)
+#	await ctx.send(response.text)
 
 @bot.command(name='map', help='Get a map of our japan trip')
 async def map_command(ctx):
