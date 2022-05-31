@@ -105,7 +105,6 @@ async def map_command(ctx):
 async def schedule_daily_message():
 	while True:
 		now = datetime.datetime.now()
-		then = now+datetime.timedelta(days=1)
 		then = now.replace(hour=8, minute=0, second=0)
 		if then < now:
 			then += datetime.timedelta(days=1)
