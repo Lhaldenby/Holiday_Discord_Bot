@@ -3,7 +3,7 @@ import os, discord, datetime, asyncio, string
 from dotenv import load_dotenv
 from discord.ext import commands
 from dataclasses import dataclass
-from googletrans import Translator
+from translate import Translator
 from time import sleep
 
 load_dotenv()
@@ -43,7 +43,7 @@ async def days_command(ctx):
 
 @bot.command(name='time', help='Responds with the local Japan time')
 async def time_command(ctx):
-	today = datetime.datetime.today() + datetime.timedelta(hours=8)
+	today = datetime.datetime.today() + datetime.timedelta(hours=9)
 	formatToday = today.strftime("%d/%m/%Y %H:%M:%S")
 	await ctx.send(f'Japan datetime: {formatToday}')
 
@@ -66,8 +66,8 @@ async def going_command(ctx):
 
 @bot.command(name='going', help='Specific person details needs <name> as parameter')
 async def going_command(ctx, name:str):
-	if name == "":
-		for person in Group:
+	for person in Group:
+		if name.lower() in person.name.lower():
 			going = "isn't going"
 			timeoff = "don't have time off"
 			flight = "don't have booked their flights"
@@ -81,28 +81,12 @@ async def going_command(ctx, name:str):
 			if person.going:
 				going = "is going"
 			await ctx.send(f'{person.name} {going}. They {timeoff}, {flight} and {lodging}.')
-	else:
-		for person in Group:
-			if name in person.name:
-				going = "isn't going"
-				timeoff = "don't have time off"
-				flight = "don't have booked their flights"
-				lodging = "don't have a place to stay"
-				if person.timeoff:
-					timeoff = "have time off"
-				if person.flight:
-					flight = "have booked their flights"
-				if person.lodging:
-					lodging = "have a place to stay"
-				if person.going:
-					going = "is going"
-				await ctx.send(f'{person.name} {going}. They {timeoff}, {flight} and {lodging}.')
 
 @bot.command(name='translate', help='Translate your text to japanese')
 async def trans_command(ctx, words:str):
-	translator = Translator()
+	translator = Translator(to_lang="ja")
 	print(f'{words}')
-	response = translator.translate("Бороди́нское сраже́ние") #words, src='en', dest='ja'
+	response = translator.translate(words) #words, src='en', dest='ja'
 	print(response)
 	await ctx.send(response.text)
 
