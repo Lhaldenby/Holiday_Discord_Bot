@@ -52,12 +52,12 @@ async def going_command(ctx):
 	for person in Group:
 		going = "isn't going"
 		timeoff = "don't have time off"
-		flight = "don't have booked their flights"
+		flight = "don't have their flights booked"
 		lodging = "don't have a place to stay"
 		if person.timeoff:
 			timeoff = "have time off"
 		if person.flight:
-			flight = "have booked their flights"
+			flight = "have their flights booked"
 		if person.lodging:
 			lodging = "have a place to stay"
 		if person.going:
