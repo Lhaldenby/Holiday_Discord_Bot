@@ -35,6 +35,7 @@ Group = [
 ]
 
 @bot.command(name='days', help='Responds with the days remaining until our trip')
+@commands.cooldown(1,15,commands.BucketType.channel)
 async def days_command(ctx):
 	today = datetime.date.today()
 	future = datetime.date(2023,10,14)
@@ -42,12 +43,14 @@ async def days_command(ctx):
 	await ctx.send(f'{diff.days} days until our UWU Japan Trip')
 
 @bot.command(name='time', help='Responds with the local Japan time')
+@commands.cooldown(1,15,commands.BucketType.channel)
 async def time_command(ctx):
 	today = datetime.datetime.today() + datetime.timedelta(hours=9)
 	formatToday = today.strftime("%d/%m/%Y %H:%M:%S")
 	await ctx.send(f'Japan datetime: {formatToday}')
 
 @bot.command(name='going_list', help='Whos going on the trip and booked what')
+@commands.cooldown(1,30,commands.BucketType.channel)
 async def going_command(ctx):
 	for person in Group:
 		going = "isn't going"
@@ -65,6 +68,7 @@ async def going_command(ctx):
 		await ctx.send(f'{person.name} {going}. They {timeoff}, {flight} and {lodging}.')
 
 @bot.command(name='going', help='Specific person details needs <name> as parameter')
+@commands.cooldown(2,30,commands.BucketType.user)
 async def going_command(ctx, name:str):
 	for person in Group:
 		if name.lower() in person.name.lower():
@@ -83,6 +87,7 @@ async def going_command(ctx, name:str):
 			await ctx.send(f'{person.name} {going}. They {timeoff}, {flight} and {lodging}.')
 
 #@bot.command(name='translate', help='Translate your text to japanese')
+#@commands.cooldown(3,30,commands.BucketType.user)
 #async def trans_command(ctx, words:str):
 #	translator = Translator(to_lang="ja")
 #	print(f'{words}')
@@ -91,8 +96,9 @@ async def going_command(ctx, name:str):
 #	await ctx.send(response.text)
 
 @bot.command(name='map', help='Get a map of our japan trip')
+@commands.cooldown(1,30,commands.BucketType.channel)
 async def map_command(ctx):
-	embed=discord.Embed(colour = discord.Colour.orange(), timestamp=ctx.message.created_at)
+	embed=discord.Embed(colour = discord.Colour.orange(), timestamp=ctx.message.created_at, url="https://www.google.com/maps/d/edit?mid=1o_mgr_3GXP_xbLO9mb4QeON7vLoxOSU&ll=35.13006297296019%2C138.11491213319218&z=8")
 	embed.set_image(url=(f"https://image.thum.io/get/width/1920/crop/1200/viewportWidth/2400/maxAge/1/noanimate/https://www.google.com/maps/d/edit?mid=1o_mgr_3GXP_xbLO9mb4QeON7vLoxOSU&ll=34.545604858227236%2C136.10263576493375&z=8"))
 	await ctx.send(embed=embed)
 
@@ -106,7 +112,7 @@ async def schedule_daily_message():
 		wait_time = (then-now).total_seconds()
 		await asyncio.sleep(wait_time)
 
-		channel = bot.get_channel(CHANNEL) #to be changed when jack gets it
+		channel = bot.get_channel(CHANNEL)
 		today = datetime.date.today()
 		future = datetime.date(2023,10,14)
 		diff = future - today
@@ -117,6 +123,9 @@ async def schedule_daily_message():
 async def on_command_error(ctx, error):
 	if isinstance(error, commands.errors.CheckFailure):
 		await ctx.send('You do not have the correct role for this command.')
+	if isinstance(error, commands.CommandOnCooldown):
+		msg = '**Still on cooldown**, please try again in {:.2f}s'.format(error.retry_after)
+		await ctx.send(msg)
 
 @bot.event
 async def on_ready():
