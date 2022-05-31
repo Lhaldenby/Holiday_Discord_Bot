@@ -101,7 +101,8 @@ async def map_command(ctx):
 	embed=discord.Embed(title="Our Japan Map",colour = discord.Colour.orange(), timestamp=ctx.message.created_at)
 	embed.set_image(url=(f"https://image.thum.io/get/width/1920/crop/1200/viewportWidth/2400/maxAge/1/noanimate/https://www.google.com/maps/d/edit?mid=1o_mgr_3GXP_xbLO9mb4QeON7vLoxOSU&ll=34.545604858227236%2C136.10263576493375&z=8"))
 	embed.set_footer(
-		text=f"https://www.google.com/maps/d/edit?mid=1o_mgr_3GXP_xbLO9mb4QeON7vLoxOSU&ll=35.13006297296019%2C138.11491213319218&z=8"
+		text=f"Map_Link",
+		icon_url="https://www.google.com/maps/d/edit?mid=1o_mgr_3GXP_xbLO9mb4QeON7vLoxOSU&ll=35.13006297296019%2C138.11491213319218&z=8"
 	)
 	await ctx.send(embed=embed)
 
