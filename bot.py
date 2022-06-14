@@ -122,7 +122,7 @@ async def schedule_daily_message():
 @tasks.loop(minutes=1.0)
 async def send_daily_message():
 	now = datetime.now()
-	mystart = now.replace(hour=17, minute=35, second=0)
+	mystart = now.replace(hour=17, minute=40, second=0)
 	if now.hour == datetime.strptime(mystart).hour and now.minute == datetime.strptip(mystart).minute:
 		channel = bot.get_channel(CHANNEL)
 		today = datetime.date.today()
@@ -141,6 +141,6 @@ async def on_command_error(ctx, error):
 @bot.event
 async def on_ready():
 	print(f"Logged in as: {bot.user.name}")
-	await schedule_daily_message()
+	send_daily_message.start()
 
 bot.run(TOKEN)
