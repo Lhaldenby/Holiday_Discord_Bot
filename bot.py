@@ -40,7 +40,14 @@ async def days_command(ctx):
 	today = datetime.date.today()
 	future = datetime.date(2023,10,14)
 	diff = future - today
-	await ctx.send(f'{diff.days} days until our UWU Japan Trip')
+	if diff.days == 0:
+		await ctx.send("Today is the day!!")
+	elif diff.days < 0 and diff.days >= -14:
+		await ctx.send("We are in Japan, get off discord!")
+	elif diff.days < -14:
+		await ctx.send("We miss Japan :(")
+	else:
+		await ctx.send(f'{diff.days} days until our UWU Japan Trip')	
 
 @bot.command(name='time', help='Responds with the local Japan time')
 @commands.cooldown(1,15,commands.BucketType.channel)
