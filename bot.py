@@ -1,3 +1,4 @@
+from http import client
 import os, discord, datetime, asyncio, string
 
 from dotenv import load_dotenv
@@ -117,7 +118,7 @@ async def map_command(ctx):
 #todo: fix
 async def schedule_daily_message():
 	while True:
-		now = datetime.datetime.now()
+		now = datetime.datetime.today()
 		then = now.replace(hour=8, minute=0, second=0)
 		if then < now:
 			then += datetime.timedelta(days=1)
@@ -133,14 +134,15 @@ async def schedule_daily_message():
 
 @tasks.loop(hours=1.0)
 async def send_daily_message():
-	now = datetime.now()
-	mystart = now.replace(hour=10, minute=40, second=0)
-	if now.hour == datetime.strptime(mystart).hour:
-		channel = bot.get_channel(CHANNEL)
+	now = datetime.datetime.today()
+	mystart = now.replace(hour=11, minute=40, second=0)
+	if now.hour == mystart.hour:
+		channelToSend = bot.get_channel(CHANNEL)
+		print(f"{channelToSend}")
 		today = datetime.date.today()
 		future = datetime.date(2023,10,14)
 		diff = future - today
-		await channel.send(f'Japan Countdown {diff.days} days remaining')
+		await channelToSend.send(f'Japan Countdown {diff.days} days remaining')
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -153,9 +155,9 @@ async def on_command_error(ctx, error):
 @bot.command(name='test', help='Get a map of our japan trip')
 @commands.cooldown(1,30,commands.BucketType.channel)
 async def test_command(ctx):
-	channel = bot.get_channel(CHANNEL)
-	await ctx.send(f'test with ctx {CHANNEL}')
-	await channel.send(f'test with channel')
+	channelToSend = bot.get_channel(CHANNEL)
+	await ctx.send(f'test with ctx {channelToSend}')
+	await channelToSend.send(f'test with channel')
 
 @bot.event
 async def on_ready():
