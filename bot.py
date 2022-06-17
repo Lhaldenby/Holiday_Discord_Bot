@@ -139,6 +139,7 @@ async def send_daily_message():
 	if now.hour == mystart.hour:
 		channelToSend = bot.get_channel(CHANNEL)
 		print(f"{channelToSend}")
+		print(f"{CHANNEL}")
 		today = datetime.date.today()
 		future = datetime.date(2023,10,14)
 		diff = future - today
@@ -156,6 +157,8 @@ async def on_command_error(ctx, error):
 @commands.cooldown(1,30,commands.BucketType.channel)
 async def test_command(ctx):
 	channelToSend = bot.get_channel(CHANNEL)
+	print(f"{channelToSend}")
+	print(f"{CHANNEL}")
 	await ctx.send(f'test with ctx {channelToSend}')
 	await channelToSend.send(f'test with channel')
 
