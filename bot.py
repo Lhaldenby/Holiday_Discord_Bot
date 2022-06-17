@@ -126,11 +126,11 @@ async def schedule_daily_message():
 		await channel.send(f'Japan Countdown {diff.days} days remaining')
 		await asyncio.sleep(1)
 
-@tasks.loop(minutes=1.0)
+@tasks.loop(hours=1.0)
 async def send_daily_message():
 	now = datetime.now()
-	mystart = now.replace(hour=17, minute=40, second=0)
-	if now.hour == datetime.strptime(mystart).hour and now.minute == datetime.strptip(mystart).minute:
+	mystart = now.replace(hour=10, minute=40, second=0)
+	if now.hour == datetime.strptime(mystart).hour:
 		channel = bot.get_channel(CHANNEL)
 		today = datetime.date.today()
 		future = datetime.date(2023,10,14)
@@ -145,9 +145,18 @@ async def on_command_error(ctx, error):
 		msg = '**Still on cooldown**, please try again in {:.2f}s'.format(error.retry_after)
 		await ctx.send(msg)
 
+@bot.command(name='test', help='Get a map of our japan trip')
+@commands.cooldown(1,30,commands.BucketType.channel)
+async def test_command(ctx):
+	channel = bot.get_channel(CHANNEL)
+	today = datetime.date.today()
+	future = datetime.date(2023,10,14)
+	diff = future - today
+	await channel.send(f'Japan Countdown {diff.days} days remaining')
+
+
 @bot.event
 async def on_ready():
-	print(f"Logged in as: {bot.user.name}")
 	send_daily_message.start()
 
 bot.run(TOKEN)
