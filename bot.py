@@ -154,7 +154,7 @@ async def on_command_error(ctx, error):
 @commands.cooldown(1,30,commands.BucketType.channel)
 async def test_command(ctx):
 	channel = bot.get_channel(CHANNEL)
-	await ctx.send(f'test with ctx')
+	await ctx.send(f'test with ctx {CHANNEL}')
 	await channel.send(f'test with channel')
 
 @bot.event
