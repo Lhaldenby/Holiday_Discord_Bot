@@ -34,6 +34,7 @@ Group = [
 	Person("Oli Ali",False,False,False,False)
 ]
 
+#DONE
 @bot.command(name='days', help='Responds with the days remaining until our trip')
 @commands.cooldown(1,15,commands.BucketType.channel)
 async def days_command(ctx):
@@ -49,6 +50,7 @@ async def days_command(ctx):
 	else:
 		await ctx.send(f'{diff.days} days until our UWU Japan Trip')	
 
+#DONE
 @bot.command(name='time', help='Responds with the local Japan time')
 @commands.cooldown(1,15,commands.BucketType.channel)
 async def time_command(ctx):
@@ -56,6 +58,7 @@ async def time_command(ctx):
 	formatToday = today.strftime("%d/%m/%Y %H:%M:%S")
 	await ctx.send(f'Japan datetime: {formatToday}')
 
+#DONE
 @bot.command(name='going_list', help='Whos going on the trip and booked what')
 @commands.cooldown(1,30,commands.BucketType.channel)
 async def going_command(ctx):
@@ -74,6 +77,7 @@ async def going_command(ctx):
 			going = "is going"
 		await ctx.send(f'{person.name} {going}. They {timeoff}, {flight} and {lodging}.')
 
+#DONE
 @bot.command(name='going', help='Specific person details needs <name> as parameter')
 @commands.cooldown(2,30,commands.BucketType.user)
 async def going_command(ctx, name:str):
@@ -102,6 +106,7 @@ async def going_command(ctx, name:str):
 #	print(response)
 #	await ctx.send(response.text)
 
+#DONE
 @bot.command(name='map', help='Get a map of our japan trip')
 @commands.cooldown(1,30,commands.BucketType.channel)
 async def map_command(ctx):
@@ -149,11 +154,8 @@ async def on_command_error(ctx, error):
 @commands.cooldown(1,30,commands.BucketType.channel)
 async def test_command(ctx):
 	channel = bot.get_channel(CHANNEL)
-	today = datetime.date.today()
-	future = datetime.date(2023,10,14)
-	diff = future - today
-	await channel.send(f'Japan Countdown {diff.days} days remaining')
-
+	await channel.send(f'test with channel')
+	await ctx.send(f'test with ctx')
 
 @bot.event
 async def on_ready():
