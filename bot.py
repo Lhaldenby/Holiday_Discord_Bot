@@ -115,31 +115,13 @@ async def map_command(ctx):
 	embed.set_image(url=(f"https://image.thum.io/get/width/1920/crop/1200/viewportWidth/2400/maxAge/1/noanimate/https://www.google.com/maps/d/edit?mid=1o_mgr_3GXP_xbLO9mb4QeON7vLoxOSU&ll=34.545604858227236%2C136.10263576493375&z=8"))
 	await ctx.send(embed=embed)
 
-#todo: fix
-async def schedule_daily_message():
-	while True:
-		now = datetime.datetime.today()
-		then = now.replace(hour=8, minute=0, second=0)
-		if then < now:
-			then += datetime.timedelta(days=1)
-		wait_time = (then-now).total_seconds()
-		await asyncio.sleep(wait_time)
-
-		channel = bot.get_channel(CHANNEL)
-		today = datetime.date.today()
-		future = datetime.date(2023,10,14)
-		diff = future - today
-		await channel.send(f'Japan Countdown {diff.days} days remaining')
-		await asyncio.sleep(1)
-
+#DONE
 @tasks.loop(hours=1.0)
 async def send_daily_message():
 	now = datetime.datetime.today()
-	mystart = now.replace(hour=11, minute=40, second=0)
+	mystart = now.replace(hour=8, minute=40, second=0)
 	if now.hour == mystart.hour:
-		channelToSend = bot.get_channel(CHANNEL)
-		print(f"{channelToSend}")
-		print(f"{CHANNEL}")
+		channelToSend = await bot.fetch_channel(CHANNEL)
 		today = datetime.date.today()
 		future = datetime.date(2023,10,14)
 		diff = future - today
@@ -153,17 +135,10 @@ async def on_command_error(ctx, error):
 		msg = '**Still on cooldown**, please try again in {:.2f}s'.format(error.retry_after)
 		await ctx.send(msg)
 
-@bot.command(name='test', help='Get a map of our japan trip')
-@commands.cooldown(1,30,commands.BucketType.channel)
-async def test_command(ctx):
-	channelToSend = bot.get_channel(CHANNEL)
-	print(f"{channelToSend}")
-	print(f"{CHANNEL}")
-	await ctx.send(f'test with ctx {channelToSend}')
-	await channelToSend.send(f'test with channel')
-
 @bot.event
 async def on_ready():
+	print(f"Bot Started")
 	send_daily_message.start()
+	print(f"loop Started")
 
 bot.run(TOKEN)
