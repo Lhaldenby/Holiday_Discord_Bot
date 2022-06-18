@@ -119,7 +119,7 @@ async def map_command(ctx):
 @tasks.loop(hours=1.0)
 async def send_daily_message():
 	now = datetime.datetime.today()
-	mystart = now.replace(hour=8, minute=40, second=0)
+	mystart = now.replace(hour=7, minute=40, second=0)
 	print(f"Hour: {now.hour}. Wanted Hour: {mystart.hour}.")
 	if now.hour == mystart.hour:
 		channelToSend = await bot.fetch_channel(CHANNEL)
