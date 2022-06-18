@@ -126,7 +126,7 @@ async def send_daily_message():
 		today = datetime.date.today()
 		future = datetime.date(2023,10,14)
 		diff = future - today
-		await channelToSend.send(f'Japan Countdown {diff.days} days remaining')
+		await channelToSend.send(f'@Japan Gang Japan Countdown {diff.days} days remaining')
 
 @bot.event
 async def on_command_error(ctx, error):
