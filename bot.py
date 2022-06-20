@@ -126,7 +126,7 @@ async def send_daily_message():
 		today = datetime.date.today()
 		future = datetime.date(2023,10,14)
 		diff = future - today
-		await channelToSend.send(f'@Japan Gang Japan Countdown {diff.days} days remaining')
+		await channelToSend.send(f'<@979099587560218644> Japan Countdown {diff.days} days remaining')
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -135,6 +135,11 @@ async def on_command_error(ctx, error):
 	if isinstance(error, commands.CommandOnCooldown):
 		msg = '**Still on cooldown**, please try again in {:.2f}s'.format(error.retry_after)
 		await ctx.send(msg)
+
+#@bot.command(name='test', help='test function')
+#@commands.cooldown(1,30,commands.BucketType.channel)
+#async def map_command(ctx):
+#	await ctx.send('<@&979099587560218644> you are all poo faces')
 
 @bot.event
 async def on_ready():
