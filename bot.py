@@ -136,10 +136,10 @@ async def on_command_error(ctx, error):
 		msg = '**Still on cooldown**, please try again in {:.2f}s'.format(error.retry_after)
 		await ctx.send(msg)
 
-#@bot.command(name='test', help='test function')
-#@commands.cooldown(1,30,commands.BucketType.channel)
-#async def map_command(ctx):
-#	await ctx.send('<@&979099587560218644> you are all poo faces')
+@bot.command(name='test', help='test function')
+@commands.cooldown(1,60,commands.BucketType.channel)
+async def map_command(ctx):
+	await ctx.send('<@&979099587560218644> you are all poo faces')
 
 @bot.event
 async def on_ready():
