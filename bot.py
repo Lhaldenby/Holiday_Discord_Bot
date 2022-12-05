@@ -11,7 +11,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 CHANNEL = os.getenv('DISCORD_CHANNEL')
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix='!',intents=intents)
 
 @dataclass
 class Person:
