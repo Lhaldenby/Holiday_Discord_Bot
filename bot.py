@@ -11,6 +11,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = os.getenv('DISCORD_GUILD')
 CHANNEL = os.getenv('DISCORD_CHANNEL')
+intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!',intents=intents)
 
 @dataclass
