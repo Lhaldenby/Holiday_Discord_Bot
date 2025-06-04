@@ -74,7 +74,7 @@ async def send_countdown():
         today = datetime.date.today()
         if last_sent_date != today:
             last_sent_date = today
-            target_date = datetime.date(2026, 4, 3)
+            target_date = datetime.date(2026, 4, 1)
             countdown_days = (target_date - today).days
             await channel.send(f"<@&979099587560218644> Countdown to Japan 2026: {countdown_days} days remaining!\n{get_yen()}")
         await asyncio.sleep(60)
