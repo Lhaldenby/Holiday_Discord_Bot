@@ -7,6 +7,7 @@ import json
 from discord.ext import commands
 from discord.ext.commands import cooldown, BucketType
 from oauth2client.service_account import ServiceAccountCredentials
+from wcwidth import wcswidth
 
 # Load configuration from config.json
 with open("config.json", "r") as config_file:
@@ -29,7 +30,7 @@ def get_google_sheet_data():
     try:
         creds = ServiceAccountCredentials.from_json_keyfile_name(CREDS_FILE, SCOPE)
         client = gspread.authorize(creds)
-        sheet = client.open(SPREADSHEET_NAME).get_worksheet(3)  # Select the first sheet
+        sheet = client.open(SPREADSHEET_NAME).get_worksheet(3)  # Select the fourth sheet
         return sheet
     except Exception as e:
         print("Error fetching Google Sheet data:", e)
@@ -45,15 +46,17 @@ def get_yen():
     try:
         querystring = {"to": "JPY", "from": "GBP", "q": "1.0"}
         response = requests.get(EXCHANGE_API_URL, headers=HEADERS, params=querystring)
-        yen_rate = response.json()
+        yen_rate = float(response.json())
         if yen_rate:
-            return (f"Current exchange rate: 1 GBP = {yen_rate} JPY")
+            return (f"Current exchange rate: 1 GBP = {yen_rate:.2f} JPY")
         else:
             return ("Could not fetch exchange rate.")
     except Exception as e:
         return ("Error fetching exchange rate {e}.")
 
+last_sent_date = None
 async def send_countdown():
+    global last_sent_date
     await bot.wait_until_ready()
     channel = bot.get_channel(CHANNEL_ID)
     if not channel:
@@ -69,11 +72,12 @@ async def send_countdown():
 
         await asyncio.sleep(wait_time)
         today = datetime.date.today()
-        target_date = datetime.date(2026, 4, 1)
-        countdown_days = (target_date - today).days
-
-        await channel.send(f"<@&979099587560218644> Countdown to Japan 2026: {countdown_days} days remaining!\n{get_yen()}")
-        await asyncio.sleep(86400)  # Wait 24 hours before sending again
+        if last_sent_date != today:
+            last_sent_date = today
+            target_date = datetime.date(2026, 4, 3)
+            countdown_days = (target_date - today).days
+            await channel.send(f"<@&979099587560218644> Countdown to Japan 2026: {countdown_days} days remaining!\n{get_yen()}")
+        await asyncio.sleep(60)
 
 @bot.event
 async def on_ready():
@@ -92,16 +96,57 @@ async def on_message(message):
 async def yen(ctx):
     await ctx.send(get_yen())
 
+def pad_display(text, width):
+    display_width = wcswidth(text)
+    return text + ' ' * (width - display_width)
+
 @bot.command(name="plan", help="Retrieve and display a table from a Google Sheet.")
 @cooldown(1, 60, BucketType.user)
-async def plan(ctx):
+async def plan(ctx, name: str = None):
     sheet = get_google_sheet_data()
-    data = sheet.get_all_values()
-    if not data:
-        await ctx.send("Error retrieving the plan from Google Sheets.")
-        return
+    people_data = {
+        "lewis" : sheet.get('C:D'),
+        "bew"   : sheet.get('E:F'),
+        "michael"   : sheet.get('E:F'),
+        "ruan"  : sheet.get('G:H'),
+        "ryan"  : sheet.get('G:H'),
+        "jack"  : sheet.get('I:J'),
+        "sweasey"  : sheet.get('I:J'),
+        "tom"   : sheet.get('K:L'),
+        "thomas"   : sheet.get('K:L'),
+        "ethan" : sheet.get('M:N'),
+        "beth"  : sheet.get('O:P'),
+        "adrian": sheet.get('Q:R'),
+        "neb"   : sheet.get('S:T'),
+        "nebula"   : sheet.get('S:T'),
+    }
+    if name:
+        name_key = name.lower()
+        if name_key in people_data:
+            data = people_data[name_key]
+            start_index = next(i for i, row in enumerate(data) if row == ['Location', 'Plan']) + 1
+            end_index = next(i for i, row in enumerate(data[start_index:], start=start_index) if row == [])
+            trip_data = data[start_index:end_index]
 
-    await ctx.send(f"Here is the plan:\n{data}")
+            normalised = [(row + [row[0]])[:2] for row in trip_data]
+            col1_width = max(wcswidth(row[0]) for row in normalised)
+            col2_width = max(wcswidth(row[1]) for row in normalised)
+
+            lines = []
+            border = '-' * (col1_width + col2_width + 5)
+            lines.append(border)
+            for col1, col2 in normalised:
+                padded_col1 = pad_display(col1, col1_width)
+                padded_col2 = pad_display(col2, col2_width)
+                lines.append(f"| {padded_col1} | {padded_col2} |")
+            lines.append(border)
+
+            table = '\n'.join(lines)
+            await ctx.send(f"```\n{table}\n```")
+        else :
+            name_options = ", ".join(people_data.keys())
+            await ctx.send(f"Unknown name {name}, try: {name_options}")
+
 
 @bot.command(name="day", help="See what everyone is doing on a certain day of the holiday")
 @cooldown(1, 1, BucketType.user)
